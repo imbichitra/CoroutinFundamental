@@ -17,6 +17,7 @@ import com.bichi.coroutinfundamental.R
 import com.bichi.coroutinfundamental.data.models.Quote
 import com.bichi.coroutinfundamental.data.models.QuotesResponse
 import com.bichi.coroutinfundamental.data.network.MyApi
+import com.bichi.coroutinfundamental.databinding.FragmentQuotesBinding
 import kotlinx.android.synthetic.main.fragment_quotes.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -38,33 +39,39 @@ private const val ARG_PARAM2 = "param2"
  */
 class QuotesFragment : Fragment() {
 
+    private val quotesAdapter by lazy { QuotesAdapter() }
     var quotesList:ArrayList<Quote>?= ArrayList()
-    var quotesAdapter:QuotesAdapter? = null
     private lateinit var viewModel:QuotesViewModel
+
+    private lateinit var binding : FragmentQuotesBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_quotes, container, false)
-        return view
+        /*val view =  inflater.inflate(R.layout.fragment_quotes, container, false)
+        return view*/
+        binding = FragmentQuotesBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     @SuppressLint("WrongConstant")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        quotesAdapter = quotesList?.let { QuotesAdapter(it) }
 
-        recyclerview_quotes?.let {
+        /*recyclerview_quotes?.let {
             it.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
             it.adapter = quotesAdapter
-        }
+        }*/
+        binding.recyclerviewQuotes.adapter =quotesAdapter
 
         viewModel = ViewModelProvider(this).get(QuotesViewModel::class.java)
+
         viewModel.quotes?.observe(viewLifecycleOwner, Observer {
-            quotesList?.addAll(it)
-            quotesAdapter?.notifyDataSetChanged()
+            //quotesList?.addAll(it)
+            //quotesAdapter?.notifyDataSetChanged()
+            quotesAdapter.quotesList = it
         })
     }
 
